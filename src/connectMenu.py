@@ -31,7 +31,13 @@ class ConnectMenu:
             self.manager.tick(events)
 
             if self.BUTTON_connect.isPressed is True:
-                self.client = Client(self.TEXTBOX_addr.text)
+                text = self.TEXTBOX_addr.text
+                server = text.split(":")[0]
+                port = 25565
+                if len(text.split(":")) > 1:
+                    port = text.split(":")[1]
+
+                self.client = Client(server, port)
                 self.BUTTON_connect.isPressed = False
                 SOTMenu(self.screen, self.settings, self.client).run()
 

@@ -27,15 +27,25 @@ class SOTMenu:
 
         # statuses
         FONT_stats = ui.CUIFont(settings.COMFORT, 80, ui.CUColor.WHITE())
+
+        direct = "RIGHT"
+        if client.SOT.STEERING_PERCENT < 0:
+            direct = "LEFT"
+
         self.LABEL_steering = ui.CUILabel(
-            FONT_stats.get_center(self.screen.prescaledSurface, f"Steering: {client.SOT.STEERING_PERCENT}%", ).x, 400,
-            FONT_stats, f"Steering: {client.SOT.STEERING_PERCENT}%")
+            FONT_stats.get_center(self.screen.prescaledSurface, f"Steering: {abs(client.SOT.STEERING_PERCENT)}% {direct}").x, 400,
+            FONT_stats, f"Steering: {abs(client.SOT.STEERING_PERCENT)}% {direct}")
 
     def on_refresh(self, client):
         FONT_stats = ui.CUIFont(self.settings.COMFORT, 80, ui.CUColor.WHITE())
+
+        direct = "RIGHT"
+        if client.SOT.STEERING_PERCENT < 0:
+            direct = "LEFT"
+
         self.LABEL_steering = ui.CUILabel(
-            FONT_stats.get_center(self.screen.prescaledSurface, f"Steering: {client.SOT.STEERING_PERCENT}%", ).x, 400,
-            FONT_stats, f"Steering: {client.SOT.STEERING_PERCENT}%")
+            FONT_stats.get_center(self.screen.prescaledSurface, f"Steering: {abs(client.SOT.STEERING_PERCENT)}% {direct}").x, 400,
+            FONT_stats, f"Steering: {abs(client.SOT.STEERING_PERCENT)}% {direct}")
 
     def run(self):
         frames = 0

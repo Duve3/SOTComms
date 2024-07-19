@@ -12,7 +12,7 @@ import logging
 from pynput import keyboard
 
 server = "127.0.0.1"
-port = 80
+port = 25565
 header = 64
 
 
@@ -100,7 +100,7 @@ class Listen:
                 self.keys.remove('<102>')
                 self.data.STEERING_PERCENT = 25
 
-            print(self.keys)
+            # print(self.keys)
 
             time.sleep(0.25)
 

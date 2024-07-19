@@ -31,11 +31,11 @@ class SOTData:
 
 
 class Client:
-    def __init__(self, serverIP: str):
+    def __init__(self, serverIP: str, port: int):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         self.server = serverIP
-        self.port = 80
+        self.port = port
         self.addr = (self.server, self.port)
         self.header = 64
         self.socket.settimeout(10)
