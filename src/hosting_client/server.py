@@ -1,17 +1,13 @@
 import socket
 import json
-import threading
 import time
-
-import pynput.keyboard
-
 from logger import setupLogging
 from constants import ENCODING, DISCONNECT, REQ_DATA, SHIP_TYPE, SHIPS
 from _thread import start_new_thread
 import logging
 from pynput import keyboard
 
-server = "127.0.0.1"
+server = ""
 port = 25565
 header = 64
 
@@ -60,28 +56,22 @@ def recv(conn) -> str:
 
 
 class Listen:
-    def __init__(self, ship):
+    def __init__(self, ship, logger):
         self.keys = []
         self.listen = keyboard.Listener(on_press=self.on_press)
         self.data = ship
+        self.logger: logging.Logger = logger
 
-    def on_press(self, key) -> None:
-        if key == keyboard.Key.delete:
-            return  # stop
-        try:
-            k = key.char
-        except:
-            k = key.name  # other keys
-
-        self.keys.append(k)
+    def on_press(self, key: keyboard.KeyCode) -> None:
+        self.keys.append(getattr(key, 'vk', None))
 
     def start(self):
         self.listen.start()
 
     def threaded_listen(self):
         while True:
-            if '=' in self.keys:
-                self.keys.remove('=')
+            if keyboard.KeyCode(char="=").vk in self.keys:
+                self.keys.remove(keyboard.KeyCode(char="=").vk)
                 self.data.STEERING_PERCENT = 0
                 if self.data.SHIP_CLASS == 'SLOP':
                     self.data.SAILS_STATUS = [100.0]
@@ -92,15 +82,50 @@ class Listen:
                 elif self.data.SHIP_CLASS == 'GALL':
                     self.data.SAILS_STATUS = [100.0, 100.0, 100.0]
 
-            elif '<101>' in self.keys:
-                self.keys.remove('<101>')
+            elif 101 in self.keys:
+                self.keys.remove(101)
                 self.data.STEERING_PERCENT = 0
+                self.logger.info("Steering set to 0%")
 
-            elif '<102>' in self.keys:
-                self.keys.remove('<102>')
+            elif 97 in self.keys:
+                self.keys.remove(97)
+                self.data.STEERING_PERCENT = -25
+                self.logger.info("Steering set to -25%")
+
+            elif 100 in self.keys:
+                self.keys.remove(100)
+                self.data.STEERING_PERCENT = -50
+                self.logger.info("Steering set to -50%")
+
+            elif 103 in self.keys:
+                self.keys.remove(103)
+                self.data.STEERING_PERCENT = -75
+                self.logger.info("Steering set to -75%")
+
+            elif 104 in self.keys:
+                self.keys.remove(104)
+                self.data.STEERING_PERCENT = -100
+                self.logger.info("Steering set to -100%")
+
+            elif 105 in self.keys:
+                self.keys.remove(105)
                 self.data.STEERING_PERCENT = 25
+                self.logger.info("Steering set to 25%")
 
-            # print(self.keys)
+            elif 102 in self.keys:
+                self.keys.remove(102)
+                self.data.STEERING_PERCENT = 50
+                self.logger.info("Steering set to 50%")
+
+            elif 99 in self.keys:
+                self.keys.remove(99)
+                self.data.STEERING_PERCENT = 75
+                self.logger.info("Steering set to 75%")
+
+            elif 98 in self.keys:
+                self.keys.remove(98)
+                self.data.STEERING_PERCENT = 100
+                self.logger.info("Steering set to 100%")
 
             time.sleep(0.25)
 
@@ -112,7 +137,6 @@ def threaded_client(conn, logger, listener: Listen):
     while True:
         try:
             ship: SOTData = listener.data
-            print(ship.STEERING_PERCENT)
             data = recv(conn)
 
             if data == DISCONNECT:
@@ -155,7 +179,9 @@ def main():
 
     s.listen()
     logger.info("Waiting for connection")
-    li = Listen(SHIP)
+
+    LL = setupLogging("key-listen", level=OverAllListeningLevel)
+    li = Listen(SHIP, LL)
     li.start()
 
     start_new_thread(li.threaded_listen, ())

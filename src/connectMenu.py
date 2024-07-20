@@ -35,7 +35,10 @@ class ConnectMenu:
                 server = text.split(":")[0]
                 port = 25565
                 if len(text.split(":")) > 1:
-                    port = text.split(":")[1]
+                    port = int(text.split(":")[1])
+
+                if text == "":
+                    server = "127.0.0.1"
 
                 self.client = Client(server, port)
                 self.BUTTON_connect.isPressed = False

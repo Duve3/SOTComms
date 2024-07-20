@@ -8,6 +8,8 @@ class SOTMenu:
         self.screen = screen
         self.settings = settings
 
+        self.refresh_rate = settings.REFRESH_RATE
+
         FONT_title = ui.CUIFont(settings.COMFORT, 100, ui.CUColor.WHITE())
         self.LABEL_title = ui.CUILabel(FONT_title.get_center(self.screen.prescaledSurface,
                                                              f"Connected to {client.server}, CLASS: {client.SOT.SHIP_CLASS}").x,
@@ -32,6 +34,9 @@ class SOTMenu:
         if client.SOT.STEERING_PERCENT < 0:
             direct = "LEFT"
 
+        if client.SOT.STEERING_PERCENT == 0:
+            direct = "CENTER"
+
         self.LABEL_steering = ui.CUILabel(
             FONT_stats.get_center(self.screen.prescaledSurface, f"Steering: {abs(client.SOT.STEERING_PERCENT)}% {direct}").x, 400,
             FONT_stats, f"Steering: {abs(client.SOT.STEERING_PERCENT)}% {direct}")
@@ -43,6 +48,9 @@ class SOTMenu:
         if client.SOT.STEERING_PERCENT < 0:
             direct = "LEFT"
 
+        if client.SOT.STEERING_PERCENT == 0:
+            direct = "CENTER"
+
         self.LABEL_steering = ui.CUILabel(
             FONT_stats.get_center(self.screen.prescaledSurface, f"Steering: {abs(client.SOT.STEERING_PERCENT)}% {direct}").x, 400,
             FONT_stats, f"Steering: {abs(client.SOT.STEERING_PERCENT)}% {direct}")
@@ -53,7 +61,7 @@ class SOTMenu:
             self.screen.clock.tick(60)
             frames += 1
 
-            if frames % 30 == 0:
+            if frames % self.refresh_rate == 0:
                 self.client.refresh()
                 self.on_refresh(self.client)
 
@@ -66,7 +74,8 @@ class SOTMenu:
 
             for event in events:
                 if event.type == pygame.QUIT:
-                    return
+                    self.client.disconnect()
+                    self.screen.close(kill=True)
 
                 elif event.type == pygame.WINDOWRESIZED:
                     self.manager.set_scale(self.screen.prescaledSurface.size, self.screen.surface.size)
