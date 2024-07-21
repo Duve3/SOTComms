@@ -19,7 +19,7 @@ class ConnectMenu:
         self.TEXTBOX_BORDER_addr = ui.CUIObject(self.TEXTBOX_addr.x, self.TEXTBOX_addr.y, self.TEXTBOX_addr.width, self.TEXTBOX_addr.height, ui.CUColor.BLACK(), draw_border_radius=10, draw_width=10)
 
         self.BUTTON_connect = ui.CUITextButton(930, 600, 700, 140, ui.CUColor.GRAY(), ui.CUIFont(settings.COMFORT, 60, ui.CUColor.WHITE()), "CONNECT")
-        self.manager = ui.CUIManager([self.TEXTBOX_addr, self.BUTTON_connect], scale=True, preres=self.screen.prescaledSurface.size, postres=self.screen.surface.size)
+        self.manager = ui.CUIManager([self.TEXTBOX_addr, self.BUTTON_connect], scale=True, preres=self.screen.prescaledSurface.get_size(), postres=self.screen.surface.get_size())
 
         self.client = None
 

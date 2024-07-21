@@ -22,8 +22,8 @@ class SOTMenu:
                                                      self.BUTTON_disconnect.width, self.BUTTON_disconnect.height,
                                                      ui.CUColor.BLACK(), draw_border_radius=10, draw_width=10)
 
-        self.manager = ui.CUIManager([self.BUTTON_disconnect], scale=True, preres=self.screen.prescaledSurface.size,
-                                     postres=self.screen.surface.size)
+        self.manager = ui.CUIManager([self.BUTTON_disconnect], scale=True, preres=self.screen.prescaledSurface.get_size(),
+                                     postres=self.screen.surface.get_size())
 
         self.client = client
 
